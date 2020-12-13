@@ -8,7 +8,7 @@ class Background {
     this.bgX = 0
     this.bgY = 0
     this.bgWidth = this.ctx.canvas.width
-    this.bgHeight = this.ctx.canvas.height
+    this.bgHeight = this.ctx.canvas.height -18
 
     this.footerX = 0
     this.footerY = this.ctx.canvas.height - 79
@@ -44,29 +44,29 @@ class Background {
         this.bgHeight
       )
       this.ctx.drawImage(
-        this.bgImg,
-        this.bgX + this.ctx.canvas.width -1,
-        this.bgY,
-        this.bgWidth,
-        this.bgHeight
-      )
-      this.ctx.drawImage(
         this.footerImg,
         this.footerX,
         this.footerY,
         this.footerWidth,
         this.footerHeight
       )
+      this.ctx.drawImage(
+        this.footerImg,
+        this.footerX + this.ctx.canvas.width -1,
+        this.footerY,
+        this.footerWidth,
+        this.footerHeight
+      )
 
-      if (this.bgX + this.bgWidth === 0) {
-        this.bgX = 0
+      if (this.footerX + this.footerWidth === 0) {
+        this.footerX = 0
       }
     }
   }
 
   move() {
     // move the ground
-    this.bgX += this.vx
+    this.footerX += this.vx
     // check bounds
   }
 }
