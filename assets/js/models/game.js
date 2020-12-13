@@ -33,7 +33,15 @@ class Game {
     this.drawIntervalId = setInterval(() => {
       this.clear()
       this.draw()
+      this.checkCollisions()
       this.move()
+      this.drawPipesCount++
+
+      if (this.drawPipesCount % this.pipesFrequency === 0) {
+          this.addPipes()
+          this.drawPipesCount = 0
+        }
+
     }, this.fps)
     
   }
@@ -54,6 +62,8 @@ class Game {
   clear() {
     // Iteration 1: clean the screen
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+
+    this.pipes = this.pipes.filter(pipe => pipe.x + pipe.width >= 0)
   }
 
   move() {
@@ -62,10 +72,21 @@ class Game {
     // Iteration 2: move the flappy
     this.bird.move()
     // Iteration 3: move the pipes
+    this.pipes.forEach(pipe => pipe.move())
   }
 
   addPipes() {
     // Iteration 3: each draw pipes frequency cycles concat a pair of pipes to the pipes array and reset the draw cycle
+    const minSpace = 2 * this.bird.height + this.bird.jumpImpulse
+    const maxHeight = 0.75 * (this.canvas.height - 79)
+    const minHeight = 30
+    const bottomHeight = Math.floor(Math.random() * maxHeight)
+    const topHeight = (this.canvas.height - 79) - bottomHeight - minSpace
+
+    this.pipes.push(
+      new Pipe(this.ctx, this.canvas.width, 0, topHeight, 'top'),
+      new Pipe(this.ctx, this.canvas.width, (this.canvas.height - 79) - bottomHeight, bottomHeight, 'bottom')
+    )
   }
 
   randPairOfPipes() {
@@ -74,6 +95,9 @@ class Game {
 
   checkCollisions() {
     // Iteration 4: check pipes collisions among flappy
+    if (this.pipes.some(pipe => this.bird.collides(pipe))) {
+      this.stop()
+    }
   }
 
   checkScore() {
@@ -86,6 +110,7 @@ class Game {
     // Iteration 2: draw the flappy
     this.bird.draw()
     // Iteration 2: draw the pipes
+    this.pipes.forEach(pipe => pipe.draw())
     // Bonus: draw the score
   }
 }

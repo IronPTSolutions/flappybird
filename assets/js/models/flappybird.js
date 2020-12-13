@@ -61,7 +61,7 @@ class FlappyBird {
       // animate sprite
     }
     this.animate()
-    if (this.y <= 0 || this.y + this.height >= this.ctx.canvas.height) {
+    if (this.y <= 0 || this.y + this.height + 79 >= this.ctx.canvas.height) {
       game.stop()
     }
   }
@@ -96,6 +96,10 @@ class FlappyBird {
 
   collides(element) {
     // iteration 3: check collisions (true|false)
+    return this.x < element.x + element.width &&
+      this.x + this.width > element.x &&
+      this.y < element.y + element.height &&
+      this.y + this.height > element.y
   }
 
 }
