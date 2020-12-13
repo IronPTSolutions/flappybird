@@ -20,6 +20,9 @@ class Game {
     this.pipesFrequency = 100;
 
     // bonus: setup the score
+    this.score = 0
+    this.isCounting = false
+    this.scoreIntervalId = undefined
   }
   
 
@@ -34,6 +37,7 @@ class Game {
       this.clear()
       this.draw()
       this.checkCollisions()
+      this.checkScore()
       this.move()
       this.drawPipesCount++
 
@@ -43,20 +47,46 @@ class Game {
         }
 
     }, this.fps)
-    
   }
 
   stop() {
     // Iteration 1: stop the game
     clearInterval(this.drawIntervalId)
+    clearInterval(this.scoreIntervalId)
+    this.end()
   }
 
   restart() {
     // Bonus: restart on demand
+    this.pipes = []
+    this.score = 0
+    this.bird.y = this.canvas.height / 2
+    this.start()
   }
 
   end() {
     // Iteration 4: stop the game and setup score
+    
+  
+
+    this.ctx.save()
+    this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)'
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
+    this.ctx.font = '26px FlappyFont'
+    this.ctx.fillStyle = 'white'
+    this.ctx.textAlign = 'center'
+    this.ctx.fillText(
+      'Game over!',
+      this.canvas.width / 2,
+      this.canvas.height / 3,
+    )
+    this.ctx.fillText(
+      `Score: ${this.score}`,
+      this.canvas.width / 2,
+      this.canvas.height / 2,
+    )
+    this.ctx.restore()
+
   }
 
   clear() {
@@ -102,6 +132,20 @@ class Game {
 
   checkScore() {
     // Bonus
+    if (this.isCounting === false) {
+      if (this.pipes.some(pipe => pipe.x < this.canvas.width / 4 - 20)) 
+      {
+          this.isCounting = true
+          this.score = 1
+          this.addScore()
+      }
+    }
+  }
+
+  addScore() {
+    this.scoreIntervalId = setInterval(() => {
+      this.score++
+    }, this.fps * 100)
   }
 
   draw() {
@@ -112,5 +156,13 @@ class Game {
     // Iteration 2: draw the pipes
     this.pipes.forEach(pipe => pipe.draw())
     // Bonus: draw the score
+    this.ctx.font = '26px FlappyFont'
+    this.ctx.fillStyle = 'white'
+    this.ctx.textAlign = 'center'
+    this.ctx.fillText(
+      `${this.score}`,
+      30,
+      40,
+    )
   }
 }
