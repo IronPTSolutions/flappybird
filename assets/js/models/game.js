@@ -125,12 +125,32 @@ class Game {
     const minSpace = 2 * this.bird.height + this.bird.jumpImpulse
     const maxHeight = 0.75 * (this.canvas.height - 79)
     const minHeight = 30
-    const bottomHeight = Math.floor(Math.random() * maxHeight)
-    const topHeight = (this.canvas.height - 79) - bottomHeight - minSpace
+    const bottomHeight = Math.floor(Math.random() * (maxHeight - minHeight) + minHeight)
+    let topHeight = (this.canvas.height - 79) - bottomHeight - minSpace
+
+    if (topHeight > 200) {
+      topHeight = 200
+    }
 
     this.pipes.push(
-      new Pipe(this.ctx, this.canvas.width, 0, topHeight, 'top'),
-      new Pipe(this.ctx, this.canvas.width, (this.canvas.height - 79) - bottomHeight, bottomHeight, 'bottom')
+      new Pipe(
+        this.ctx,
+        0,
+        200 - topHeight,
+        topHeight,
+        this.canvas.width, 
+        0, 
+        topHeight, 
+        'top'),
+      new Pipe(
+        this.ctx,
+        0,
+        0,
+        bottomHeight,
+        this.canvas.width, 
+        this.canvas.height - 79 - bottomHeight, 
+        bottomHeight, 
+        'bottom')
     )
   }
 
