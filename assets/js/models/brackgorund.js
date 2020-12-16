@@ -69,4 +69,10 @@ class Background {
     this.footerX += this.vx
     // check bounds
   }
+
+  onKeyEvent(event) {
+    if (event.type === 'keydown' && event.keyCode === KEY_R) {
+      game.restart()
+    }
+  }
 }

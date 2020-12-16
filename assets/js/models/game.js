@@ -21,19 +21,30 @@ class Game {
 
     // bonus: setup the score
     this.score = 0
+    this.bestScore = 0;
     this.isCounting = false
     this.scoreIntervalId = undefined
+    this.isStopped = false
   }
-  
 
   onKeyEvent(event) {
     // iteration 2: link flappy key events
     this.bird.onKeyEvent(event)
+    if (this.isStopped) {
+      this.backgound.onKeyEvent(event)
+    }
   }
 
   start() {
     // Iteration 1: each 60f clear - move - draw - [next iterations: addPipes - checkCollisions - checkScore]
+    if (!window.localStorage.getItem('bestScore')) {
+      this.bestScore = 0
+    } else {
+      this.bestScore = parseInt(window.localStorage.getItem('bestScore'))
+    }
+    
     this.drawIntervalId = setInterval(() => {
+      this.isStopped = false
       this.clear()
       this.draw()
       this.checkCollisions()
@@ -51,6 +62,8 @@ class Game {
 
   stop() {
     // Iteration 1: stop the game
+    this.isStopped = true
+    this.isCounting = false
     clearInterval(this.drawIntervalId)
     clearInterval(this.scoreIntervalId)
     this.end()
@@ -66,9 +79,7 @@ class Game {
 
   end() {
     // Iteration 4: stop the game and setup score
-    
-  
-
+    this.saveScore()
     this.ctx.save()
     this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)'
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
@@ -85,8 +96,12 @@ class Game {
       this.canvas.width / 2,
       this.canvas.height / 2,
     )
+    this.ctx.fillText(
+      `Press 'R' to restart`,
+      this.canvas.width / 2,
+      this.canvas.height * 2 / 3,
+    )
     this.ctx.restore()
-
   }
 
   clear() {
@@ -148,6 +163,14 @@ class Game {
     }, this.fps * 100)
   }
 
+  saveScore() {
+    if (this.bestScore > this.score) {
+    } 
+    else {
+      window.localStorage.setItem('bestScore',this.score)
+    }
+  }
+
   draw() {
     // Iteration 1: draw the background
     this.backgound.draw()
@@ -163,6 +186,14 @@ class Game {
       `${this.score}`,
       30,
       40,
+    )
+    this.ctx.font = '26px FlappyFont'
+    this.ctx.fillStyle = 'white'
+    this.ctx.textAlign = 'center'
+    this.ctx.fillText(
+      `Best: ${this.bestScore}`,
+      70,
+      480,
     )
   }
 }
